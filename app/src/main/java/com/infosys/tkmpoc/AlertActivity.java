@@ -33,6 +33,8 @@ public class AlertActivity extends AppCompatActivity {
             public void onBeaconsDiscovered(BeaconRegion region, List<Beacon> list) {
                 if (!list.isEmpty()) {
                     textView.setText(String.valueOf(round(getDistance(list.get(0)), 2)) + " m");
+                } else {
+                    textView.setText("No beacons found!");
                 }
             }
         });
