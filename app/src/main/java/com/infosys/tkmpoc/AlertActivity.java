@@ -1,6 +1,7 @@
 package com.infosys.tkmpoc;
 
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
@@ -19,12 +20,14 @@ public class AlertActivity extends AppCompatActivity {
     private BeaconManager beaconManager;
     private BeaconRegion region;
     private TextView textView;
+    private ConstraintLayout constraintLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alert);
         textView = findViewById(R.id.distance);
+        constraintLayout = findViewById(R.id.rootView);
         //Check for permissions
         SystemRequirementsChecker.checkWithDefaultDialogs(this);
         beaconManager = new BeaconManager(this);
@@ -32,9 +35,17 @@ public class AlertActivity extends AppCompatActivity {
             @Override
             public void onBeaconsDiscovered(BeaconRegion region, List<Beacon> list) {
                 if (!list.isEmpty()) {
-                    textView.setText(String.valueOf(round(getDistance(list.get(0)), 2)) + " m");
+                    Double distance = round(getDistance(list.get(0)), 2);
+                    if(distance >= 1.5){
+                        constraintLayout.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
+                        textView.setText("PPE out of Range!");
+                    } else {
+                        constraintLayout.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
+                        textView.setText(String.valueOf(distance) + " m");
+                    }
                 } else {
-                    textView.setText("No beacons found!");
+                    constraintLayout.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
+                    textView.setText("PPE out of Range!");
                 }
             }
         });
